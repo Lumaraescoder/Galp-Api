@@ -7,7 +7,11 @@ config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ['http://localhost:3000', 'galp.vercel.app'],
+    origin: [
+      'http://localhost:3000',
+      'https://galp.vercel.app/',
+      'http://galp.vercel.app/',
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
     allowedHeaders: 'Content-Type, Accept',
