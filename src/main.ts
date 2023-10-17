@@ -9,8 +9,8 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
-      'https://galp.vercel.app/',
-      'http://galp.vercel.app/',
+      'https://galp.vercel.app',
+      'http://galp.vercel.app',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
