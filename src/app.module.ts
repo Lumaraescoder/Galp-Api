@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProductsModule } from './products/products.module';
+import { StackholdersModule } from './products/stackeholder.module';
 @Module({
   imports: [
     MongooseModule.forRoot(
       'mongodb+srv://lumaraess:biwPKBf9oJQbHmT0@cluster0.qrvekqy.mongodb.net/',
     ),
-    ProductsModule,
+    StackholdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
