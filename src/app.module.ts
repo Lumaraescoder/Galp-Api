@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { StakeholdersModule } from './stackholder/stackeholder.module';
+import { FilesService } from './files/files.service';
 @Module({
   imports: [
     MongooseModule.forRoot(
@@ -11,6 +12,6 @@ import { StakeholdersModule } from './stackholder/stackeholder.module';
     StakeholdersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, FilesService],
 })
 export class AppModule {}

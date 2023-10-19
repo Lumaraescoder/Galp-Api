@@ -19,7 +19,15 @@ export class StakeholderService {
       ) {
         throw new Error('Invalid stakeholder type');
       }
-      const createdStakeholder = new this.stakeholderModel(stakeholderData);
+      const logoUrl = await this.filesService.uploadImage(file);
+
+      // Create the stakeholder with the logo URL
+      const stakeholderWithLogo = {
+        ...createStakeholderDto,
+        logo: logoUrl,
+      };
+
+      const createdStakeholder = new this.stakeholderModel(stakeholderWithLogo);
       return await createdStakeholder.save();
     } catch (error) {
       // Log the error and maybe send a more user-friendly error message to the client
