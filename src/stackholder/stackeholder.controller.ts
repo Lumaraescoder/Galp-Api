@@ -6,19 +6,29 @@ import {
   Body,
   Put,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { StakeholderService } from './stackeholder.service';
 import { Stakeholder } from './strackeholder.model';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CreateStakeholderDto } from './dto/stackeholderdto';
+import { multerOptions } from 'src/multer.config';
 
 @Controller('stakeholders')
 export class StakeholdersController {
   constructor(private readonly stakeholderService: StakeholderService) {}
 
   @Post()
+  @UseInterceptors(FileInterceptor('logo', multerOptions)) // Use multer options if you've defined any.
   async createStakeholder(
-    @Body() stakeholderData: Stakeholder,
-  ): Promise<Stakeholder> {
-    return this.stakeholderService.createStakeholder(stakeholderData);
+    @Body() createStakeholderDto: CreateStakeholderDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.stakeholderService.createStakeholder(
+      createStakeholderDto,
+      file,
+    );
   }
 
   @Get()
