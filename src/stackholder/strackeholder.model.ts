@@ -23,6 +23,7 @@ export const StakeholderSchema = new mongoose.Schema({
   logo: String,
   email: String,
   cellphone: String,
+  role: String,
   contracts: [ContractSchema],
   stakeholderType: {
     type: String,
@@ -36,6 +37,7 @@ export interface Contract extends mongoose.Document {
   name: string;
   createdAt: Date;
   createdBy: string;
+  role: string;
 }
 
 export interface Stakeholder extends mongoose.Document {
