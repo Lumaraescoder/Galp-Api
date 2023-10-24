@@ -2,8 +2,10 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { cloudinaryConfig } from 'src/clourinary/cloudinary.config';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const cloudinary = require('cloudinary').v2;
+import { CreateStakeholderDto } from './dto/stakeholderdto';
+import { Stakeholder } from './strackeholder.model';
+import * as cloudinary from 'cloudinary';
+import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class StakeholderService {
   constructor(
@@ -14,31 +16,39 @@ export class StakeholderService {
   }
 
   async createStakeholder(
-    stakeholderData: any,
-    imageFile: Express.Multer.File,
+    createStakeholderDto: CreateStakeholderDto,
+    file: Express.Multer.File,
   ): Promise<any> {
     try {
-      let result;
-      if (imageFile && imageFile.path) {
-        result = await cloudinary.uploader.upload(imageFile.path, {
-          folder: 'some-folder-name',
-        });
-      }
+      const uploadResult = file ? await this.uploadToCloudinary(file) : null;
 
       const createdStakeholder = new this.stakeholderModel({
-        ...stakeholderData,
-        logo: result ? result.secure_url : undefined,
+        ...createStakeholderDto,
+        logo: uploadResult?.secure_url,
       });
 
-      return await createdStakeholder.save();
+      return createdStakeholder.save();
     } catch (error) {
       console.error(error);
-      throw new InternalServerErrorException(
-        'An error occurred while creating the stakeholder',
-      );
+      throw new InternalServerErrorException('Error creating stakeholder');
     }
   }
+  private async uploadToCloudinary(
+    file: Express.Multer.File,
+  ): Promise<cloudinary.UploadApiResponse> {
+    try {
+      const fileStr = `data:${file.mimetype};base64,${file.buffer.toString(
+        'base64',
+      )}`;
 
+      return cloudinary.v2.uploader.upload(fileStr, {
+        public_id: `upLoads/${uuidv4()}`,
+      });
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException('Error uploading image');
+    }
+  }
   async getAllStakeholders(): Promise<any[]> {
     return this.stakeholderModel.find().exec();
   }

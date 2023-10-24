@@ -8,26 +8,33 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { StakeholderService } from './stackeholder.service';
 import { Stakeholder } from './strackeholder.model';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/multer.config';
+import { CreateStakeholderDto } from './dto/stakeholderdto';
 
 @Controller('stakeholders')
 export class StakeholdersController {
   constructor(private readonly stakeholderService: StakeholderService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('logo', multerOptions))
+  @UseInterceptors(FileInterceptor('logo')) // multerOptions removido
   async createStakeholder(
-    @Body() createStakeholderDto: any,
+    @Body() createStakeholderDto: CreateStakeholderDto,
     @UploadedFile() file: Express.Multer.File,
-  ) {
-    return this.stakeholderService.createStakeholder(
-      createStakeholderDto,
-      file,
-    );
+  ): Promise<any> {
+    try {
+      return await this.stakeholderService.createStakeholder(
+        createStakeholderDto,
+        file,
+      );
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException('Error creating stakeholder');
+    }
   }
 
   @Get()
