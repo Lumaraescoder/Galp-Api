@@ -6,23 +6,32 @@ import {
   Body,
   Put,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { StakeholderService } from './stackeholder.service';
 import { Stakeholder } from './strackeholder.model';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from 'src/multer.config';
 
 @Controller('stakeholders')
 export class StakeholdersController {
   constructor(private readonly stakeholderService: StakeholderService) {}
 
   @Post()
+  @UseInterceptors(FileInterceptor('logo', multerOptions))
   async createStakeholder(
-    @Body() stakeholderData: Stakeholder,
-  ): Promise<Stakeholder> {
-    return this.stakeholderService.createStakeholder(stakeholderData);
+    @Body() createStakeholderDto: any,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.stakeholderService.createStakeholder(
+      createStakeholderDto,
+      file,
+    );
   }
 
   @Get()
-  async getAllStakeholders(): Promise<Stakeholder[]> {
+  async getAllStakeholders(): Promise<any[]> {
     return this.stakeholderService.getAllStakeholders();
   }
 
@@ -36,7 +45,7 @@ export class StakeholdersController {
   @Put(':id')
   async updateStakeholder(
     @Param('id') stakeholderId: string,
-    @Body() stakeholderData: Stakeholder,
+    @Body() stakeholderData: any,
   ): Promise<Stakeholder> {
     return this.stakeholderService.updateStakeholder(
       stakeholderId,
