@@ -21,7 +21,7 @@ export class StakeholdersController {
   constructor(private readonly stakeholderService: StakeholderService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('logo')) // multerOptions removido
+  @UseInterceptors(FileInterceptor('logo'))
   async createStakeholder(
     @Body() createStakeholderDto: CreateStakeholderDto,
     @UploadedFile() file: Express.Multer.File,
