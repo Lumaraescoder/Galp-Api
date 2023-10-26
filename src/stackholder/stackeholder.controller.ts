@@ -31,6 +31,15 @@ export class StakeholdersController {
     );
   }
 
+  @Post(':id/upload-contract')
+  @UseInterceptors(FileInterceptor('contracts[0][url]'))
+  async uploadContract(
+    @Param('id') stakeholderId: string,
+    @UploadedFile() contractFile: Express.Multer.File,
+  ): Promise<any> {
+    return this.stakeholderService.uploadContract(stakeholderId, contractFile);
+  }
+
   @Get()
   async getAllStakeholders(): Promise<any[]> {
     return this.stakeholderService.getAllStakeholders();
