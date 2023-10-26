@@ -15,6 +15,7 @@ export class UpdateStakeholderDto {
   cashflow?: string;
   email?: string;
   role?: string;
+  keywords?: string[];
   editedby?: string;
   businesstype?: string;
   cellphone?: string;
@@ -37,6 +38,7 @@ export class CreateStakeholderDto {
   email: string;
   editedby?: string;
   role: string;
+  readonly keywords: string[];
   cellphone: string;
   contracts: CreateContractDto[];
   stakeholderType: StakeholderType;

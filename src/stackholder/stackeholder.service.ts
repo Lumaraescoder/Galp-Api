@@ -33,6 +33,7 @@ export class StakeholderService {
       throw new InternalServerErrorException('Error creating stakeholder');
     }
   }
+
   private async uploadToCloudinary(
     file: Express.Multer.File,
   ): Promise<cloudinary.UploadApiResponse> {
@@ -60,10 +61,18 @@ export class StakeholderService {
   async updateStakeholder(
     stakeholderId: string,
     stakeholderData: any,
+    keywords: string[],
   ): Promise<any> {
-    return this.stakeholderModel
-      .findByIdAndUpdate(stakeholderId, stakeholderData, { new: true })
-      .exec();
+    try {
+      stakeholderData.keywords = keywords;
+
+      return this.stakeholderModel
+        .findByIdAndUpdate(stakeholderId, stakeholderData, { new: true })
+        .exec();
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException('Error updating stakeholder');
+    }
   }
 
   async deleteStakeholder(stakeholderId: string): Promise<void> {

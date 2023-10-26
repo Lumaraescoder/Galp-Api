@@ -13,7 +13,6 @@ import {
 import { StakeholderService } from './stackeholder.service';
 import { Stakeholder } from './strackeholder.model';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { multerOptions } from 'src/multer.config';
 import { CreateStakeholderDto } from './dto/stakeholderdto';
 
 @Controller('stakeholders')
@@ -26,15 +25,10 @@ export class StakeholdersController {
     @Body() createStakeholderDto: CreateStakeholderDto,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<any> {
-    try {
-      return await this.stakeholderService.createStakeholder(
-        createStakeholderDto,
-        file,
-      );
-    } catch (error) {
-      console.error(error);
-      throw new InternalServerErrorException('Error creating stakeholder');
-    }
+    return this.stakeholderService.createStakeholder(
+      createStakeholderDto,
+      file,
+    );
   }
 
   @Get()
@@ -53,10 +47,12 @@ export class StakeholdersController {
   async updateStakeholder(
     @Param('id') stakeholderId: string,
     @Body() stakeholderData: any,
+    @Body('keywords') keywords: string[],
   ): Promise<Stakeholder> {
     return this.stakeholderService.updateStakeholder(
       stakeholderId,
       stakeholderData,
+      keywords,
     );
   }
 
