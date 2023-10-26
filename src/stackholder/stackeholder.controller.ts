@@ -9,10 +9,14 @@ import {
   UseInterceptors,
   UploadedFile,
   InternalServerErrorException,
+  UploadedFiles,
 } from '@nestjs/common';
 import { StakeholderService } from './stackeholder.service';
 import { Stakeholder } from './strackeholder.model';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { CreateStakeholderDto } from './dto/stakeholderdto';
 
 @Controller('stakeholders')
@@ -20,14 +24,25 @@ export class StakeholdersController {
   constructor(private readonly stakeholderService: StakeholderService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('logo'))
-  async createStakeholder(
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'logo', maxCount: 2 },
+      { name: 'contracts[0][url]', maxCount: 1 },
+    ]),
+  )
+  async createStakeholderWithContract(
     @Body() createStakeholderDto: CreateStakeholderDto,
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<any> {
-    return this.stakeholderService.createStakeholder(
+    @UploadedFiles() files,
+  ): Promise<CreateStakeholderDto> {
+    const logoFile = files.logo ? files.logo[0] : null;
+    const contractFile = files['contracts[0][url]']
+      ? files['contracts[0][url]'][0]
+      : null;
+
+    return this.stakeholderService.createStakeholderWithContract(
       createStakeholderDto,
-      file,
+      logoFile,
+      contractFile,
     );
   }
 

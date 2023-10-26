@@ -2,8 +2,8 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { cloudinaryConfig } from 'src/clourinary/cloudinary.config';
-import { CreateStakeholderDto } from './dto/stakeholderdto';
-import { Contract, Stakeholder } from './strackeholder.model';
+import { CreateContractDto, CreateStakeholderDto } from './dto/stakeholderdto';
+import { Contract } from './strackeholder.model';
 import * as cloudinary from 'cloudinary';
 import { v4 as uuidv4 } from 'uuid';
 @Injectable()
@@ -18,7 +18,7 @@ export class StakeholderService {
   async createStakeholder(
     createStakeholderDto: CreateStakeholderDto,
     file: Express.Multer.File,
-  ): Promise<any> {
+  ): Promise<CreateStakeholderDto> {
     try {
       const uploadResult = file ? await this.uploadToCloudinary(file) : null;
 
@@ -33,6 +33,45 @@ export class StakeholderService {
       throw new InternalServerErrorException('Error creating stakeholder');
     }
   }
+  async createStakeholderWithContract(
+    createStakeholderDto: CreateStakeholderDto,
+    logoFile: Express.Multer.File,
+    contractFile: Express.Multer.File,
+  ): Promise<CreateStakeholderDto> {
+    try {
+      const uploadResultLogo = logoFile
+        ? await this.uploadToCloudinary(logoFile)
+        : null;
+      const uploadResultContract = contractFile
+        ? await this.uploadToCloudinary(contractFile)
+        : null;
+
+      const createdStakeholder = new this.stakeholderModel({
+        ...createStakeholderDto,
+        logo: uploadResultLogo?.secure_url,
+      });
+
+      const savedStakeholder = await createdStakeholder.save();
+
+      if (uploadResultContract) {
+        const newContract: CreateContractDto = {
+          url: uploadResultContract.secure_url,
+          name: contractFile.originalname,
+        };
+
+        savedStakeholder.contracts.push(newContract);
+
+        await savedStakeholder.save();
+      }
+
+      return savedStakeholder;
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException(
+        'Error creating stakeholder with contract',
+      );
+    }
+  }
   async uploadContract(
     stakeholderId: string,
     contractFile: Express.Multer.File,
@@ -43,14 +82,13 @@ export class StakeholderService {
       const stakeholder = await this.stakeholderModel.findById(stakeholderId);
 
       if (!stakeholder) {
-        throw new Error('Stakeholder não encontrado.');
+        throw new Error('Stakeholder not found.');
       }
 
       const newContract: Contract = {
         url: uploadResult.secure_url,
         name: contractFile.originalname,
         createdAt: new Date(),
-        createdBy: stakeholderId,
       } as Contract;
 
       stakeholder.contracts.push(newContract);
@@ -60,11 +98,10 @@ export class StakeholderService {
       return newContract;
     } catch (error) {
       console.error(error);
-      throw new InternalServerErrorException(
-        'Erro ao fazer upload do contrato.',
-      );
+      throw new InternalServerErrorException('Error to trying to upload.');
     }
   }
+
   private async uploadToCloudinary(
     file: Express.Multer.File,
   ): Promise<cloudinary.UploadApiResponse> {

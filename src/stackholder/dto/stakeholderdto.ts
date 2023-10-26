@@ -3,8 +3,8 @@ import { StakeholderType } from '../strackeholder.model';
 export class UpdateContractDto {
   url?: string;
   name?: string;
-  createdBy?: string;
 }
+
 export class UpdateStakeholderDto {
   description?: string;
   business?: string;
@@ -22,11 +22,13 @@ export class UpdateStakeholderDto {
   contracts?: UpdateContractDto[];
   stakeholderType?: StakeholderType;
 }
+
 export class CreateContractDto {
   url: string;
   name: string;
-  createdBy: string;
+  createby: string;
 }
+
 export class CreateStakeholderDto {
   description: string;
   business: string;
@@ -40,6 +42,7 @@ export class CreateStakeholderDto {
   role: string;
   readonly keywords: string[];
   cellphone: string;
-  contracts: CreateContractDto[];
+  contracts: CreateContractDto[]; // No createdBy field here
   stakeholderType: StakeholderType;
+  createdBy: string; // Set createdBy here
 }

@@ -9,8 +9,13 @@ const ContractSchema = new mongoose.Schema({
   url: String,
   name: String,
   createdAt: { type: Date, default: Date.now },
-  createdBy: String,
+  createby: String,
 });
+export interface Contract extends mongoose.Document {
+  url: string;
+  name: string;
+  createdAt: Date;
+}
 
 export const StakeholderSchema = new mongoose.Schema({
   description: String,
@@ -21,6 +26,7 @@ export const StakeholderSchema = new mongoose.Schema({
   contact: String,
   cashflow: String,
   logo: String,
+  createby: String,
   email: String,
   cellphone: String,
   role: String,
@@ -35,13 +41,6 @@ export const StakeholderSchema = new mongoose.Schema({
   keywords: [String],
 });
 
-export interface Contract extends mongoose.Document {
-  url: string;
-  name: string;
-  createdAt: Date;
-  createdBy: string;
-}
-
 export interface Stakeholder extends mongoose.Document {
   description: string;
   business: string;
@@ -53,9 +52,10 @@ export interface Stakeholder extends mongoose.Document {
   businesstype: string;
   role: string;
   logo: string;
+  createby: string;
   email: string;
   cellphone: string;
   contracts: Contract[];
   stakeholderType: StakeholderType;
-  keywords: string[]; // Corrija a definição de keywords
+  keywords: string[];
 }
