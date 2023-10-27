@@ -31,6 +31,7 @@ export const StakeholderSchema = new mongoose.Schema({
   cellphone: String,
   role: String,
   businesstype: String,
+  contractDate: String,
   editedby: String,
   contracts: [ContractSchema],
   stakeholderType: {
