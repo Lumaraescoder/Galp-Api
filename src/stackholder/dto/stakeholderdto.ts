@@ -14,6 +14,7 @@ export class UpdateStakeholderDto {
   contact?: string;
   contractDate: string;
   cashflow?: string;
+  createdBy?: string;
   email?: string;
   role?: string;
   keywords?: string[];

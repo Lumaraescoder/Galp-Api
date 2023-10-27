@@ -54,7 +54,7 @@ export interface Stakeholder extends mongoose.Document {
   contractDate: string;
   role: string;
   logo: string;
-  createby: string;
+  createdBy: string;
   email: string;
   cellphone: string;
   contracts: Contract[];
