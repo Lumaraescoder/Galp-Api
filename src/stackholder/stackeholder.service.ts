@@ -57,6 +57,7 @@ export class StakeholderService {
         const newContract: CreateContractDto = {
           url: uploadResultContract.secure_url,
           name: contractFile.originalname,
+          createdBy: savedStakeholder._id,
         };
 
         savedStakeholder.contracts.push(newContract);

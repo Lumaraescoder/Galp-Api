@@ -36,7 +36,7 @@ export const StakeholderSchema = new mongoose.Schema({
   stakeholderType: {
     type: String,
     enum: Object.values(StakeholderType),
-    required: true,
+    required: false,
   },
   keywords: [String],
 });
@@ -50,6 +50,7 @@ export interface Stakeholder extends mongoose.Document {
   contact: string;
   cashflow: string;
   businesstype: string;
+  contractDate: string;
   role: string;
   logo: string;
   createby: string;

@@ -12,6 +12,7 @@ export class UpdateStakeholderDto {
   location?: string;
   ceo?: string;
   contact?: string;
+  contractDate: string;
   cashflow?: string;
   email?: string;
   role?: string;
@@ -26,7 +27,7 @@ export class UpdateStakeholderDto {
 export class CreateContractDto {
   url: string;
   name: string;
-  createby: string;
+  createdBy: string;
 }
 
 export class CreateStakeholderDto {
@@ -39,10 +40,11 @@ export class CreateStakeholderDto {
   cashflow: string;
   email: string;
   editedby?: string;
+  contractDate: string;
   role: string;
   readonly keywords: string[];
   cellphone: string;
-  contracts: CreateContractDto[]; // No createdBy field here
+  contracts: CreateContractDto[];
   stakeholderType: StakeholderType;
-  createdBy: string; // Set createdBy here
+  createdBy: string;
 }
